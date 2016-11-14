@@ -2,7 +2,7 @@
 #define CHARSTRING_H
 #include<string>
 typedef unsigned int Size;
-typedef unsigned int& Index;
+typedef unsigned int Index;
 class CharString{
 protected:
 	char *data;
@@ -43,10 +43,10 @@ public:
 	}
 
 	CharString concat( CharString *src){
-		Size l = src.get_length();
+		Size l = src->get_length();
 		char *ndata = new char[length + l];
 		memcpy(ndata, data,length);
-		memcpy(ndata + length + 1, src.get_data(), l);
+		memcpy(ndata + length + 1, src->get_data(), l);
 		delete[] data;
 		data = ndata;
 		return *this;
@@ -61,8 +61,35 @@ public:
 		return *this;
 	}
 
-	CharString assign(CharString *Dest,CharString *src){
-		Dest
+	CharString* assgin(CharString *Dest,const char *src , const Size &length){
+		return assign(Dest,new CharString(src,length));
+	}
+	CharString* assign(CharString *Dest,CharString *src){
+		delete Dest;
+		Dest = new CharString(*src);
+		return Dest;
+	}
+
+	CharString* operator = (CharString &src){
+		assign(this,&src);
+		return this;
+	}
+
+	CharString* operator = (CharString *src){
+		assign(this,src);
+		return this;
+	}
+
+	bool operator ==(CharString& src){
+		if(length != src.length){
+			return false;
+		}
+		for(Size i = 0;  i < length ; i ++){
+			if(data[i] != src.data[i]){
+				return false;
+			}
+		}
+		return true;
 	}
 };
 

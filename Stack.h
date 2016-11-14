@@ -1,11 +1,10 @@
 #ifndef STACK_H
 #define STACK_H
-#include"Error.h"
 typedef unsigned int Size;
 template <class DataType>
 class Stack{
 protected:
-	DataType *data;
+	DataType **data;
 	Size size;
 	Size capacity;
 
@@ -13,14 +12,14 @@ public:
 	Stack():data(NULL),
 		size(0),
 		capacity(1) { 
-			data = new DataType [1]; 
+			data = new DataType* [1]; 
 	}
 	~Stack(){
 		delete[] data;
 	}
 protected:
 	void doubleSize(){
-		DataType *ndata = new DataType [ capacity * 2 ];
+		DataType *ndata = new DataType* [ capacity * 2 ];
 		memcpy(ndata, data, capacity);
 		capacity << 1;
 		delete []data;
@@ -28,13 +27,11 @@ protected:
 	}
 
 public:
-	DataType top(){
-		try{
-			if(size){
-				return data[size - 1];
-			}
-			throw EmptyStackError;
+	DataType* top(){
+		if(size){
+			return data[size - 1];
 		}
+		return NULL;
 	}
 
 	bool empty(){
@@ -45,21 +42,27 @@ public:
 		return size;
 	}
 	
-	DataType pop(){
-		try{
-			if(size){
-				size --;
-				return data[size];
-			}
-			throw EmptyStackError;
+	DataType* pop(){
+		if(size){
+			size --;
+			return data[size];
 		}
+		return NULL;
 	}
 
-	Size push(DataType dt){
+	Size push(DataType* dt){
 		if(size == capacity){
 			doubleSize();
 		}
 		data[size] = dt;
+		return size;
+	}
+
+	Size push(DataType& dt){
+		if(size == capacity){
+			doubleSize();
+		}
+		data[size] = &dt;
 		return size;
 	}
 };
