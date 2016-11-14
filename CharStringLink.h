@@ -18,14 +18,17 @@ public:
 	}
 	CharStringNode(CharString *src):CharString(*src),next(NULL),pre(NULL){
 	}
+	CharStringNode(std::string& src):CharString(src),next(NULL),pre(NULL){
+	}
 	~CharStringNode(){ 
 	}
 };
 
 
 class CharStringLink{
-protected:
+public:
 	CharStringNode *head,*tail;
+protected:
 	Size size;
 
 public:
@@ -81,6 +84,16 @@ public:
 		return NULL;
 	}
 
+	CharStringNode *search(std::string& src){
+		CharStringNode *now = head;
+		while(now != NULL){
+			if(*now == CharString(src)){
+				return now;
+			}
+			now = now->next;
+		}
+		return NULL;
+	}
 	CharStringNode *add(const char *src,const Size &l){
 		CharStringNode *newNode = new CharStringNode (src,l);
 		return add(newNode);
@@ -96,6 +109,10 @@ public:
 		return add(newNode);
 	}
 
+	CharStringNode *add(std::string& src){
+		CharStringNode *newNode = new CharStringNode(src);
+		return add(newNode);
+	}
 	CharStringNode *add(CharStringNode *src){
 		if(size == 0){
 			head = src ;
@@ -110,6 +127,9 @@ public:
 		return src;
 	}
 
+	void remove(std::string& key){
+		remove(search(key));
+	}
 	void remove(const char*key, const Size&length){
 		remove(search(key,length));
 	}

@@ -18,10 +18,10 @@ public:
 		delete[] data;
 	}
 protected:
-	void doubleSize(){
-		DataType *ndata = new DataType* [ capacity * 2 ];
+	void doubleCapacity(){
+		DataType **ndata = new DataType* [ capacity * 2 ];
 		memcpy(ndata, data, capacity);
-		capacity << 1;
+		capacity = capacity * 2;
 		delete []data;
 		data = ndata;
 	}
@@ -52,17 +52,19 @@ public:
 
 	Size push(DataType* dt){
 		if(size == capacity){
-			doubleSize();
+			doubleCapacity();
 		}
 		data[size] = dt;
+		size ++;
 		return size;
 	}
 
 	Size push(DataType& dt){
 		if(size == capacity){
-			doubleSize();
+			doubleCapacity();
 		}
 		data[size] = &dt;
+		size ++;
 		return size;
 	}
 };
