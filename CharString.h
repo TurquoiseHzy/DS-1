@@ -45,8 +45,11 @@ public:
 		return length;
 	}
 
-	CharString substring(Index st_index,Index ed_index){
-		return CharString(data + st_index , ed_index - st_index + 1);
+	CharString *substring(Index st_index,Index ed_index){
+		if(st_index <= ed_index){
+			return new CharString(data + st_index , ed_index - st_index + 1);
+		}
+		return new CharString(std::string(""));
 	}
 
 	CharString concat( CharString *src){
@@ -74,19 +77,19 @@ public:
 		return assign(Dest,new CharString(src,length));
 	}
 	CharString* assign(CharString *Dest,CharString *src){
-		delete Dest;
-		Dest = new CharString(*src);
+		delete Dest->data;
+		Dest->data = new char [src->length];
+		Dest->length = src ->length;
+		memcpy(Dest->data,src->data,src->length);
 		return Dest;
 	}
 
 	CharString* operator = (CharString &src){
-		assign(this,&src);
-		return this;
+		return assign(this,&src);
 	}
 
 	CharString* operator = (CharString *src){
-		assign(this,src);
-		return this;
+		return assign(this,src);
 	}
 
 	bool operator ==(CharString& src){
@@ -118,6 +121,31 @@ public:
 			}
 		}
 		return -1;
+	}
+
+	bool noContent(const Index& stIndex, const Index& edIndex){
+		for(Index i = stIndex ; i <= edIndex ; i ++){
+			if(data[i] != '\n' && data[i] != '\0' && data[i] != ' '){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	Index findNextNotChar(const Index&stIndex, const char *redundantChar,const Size &redundantSize){
+		for(Index i = stIndex ; i < length ; i ++){
+			bool flag = true;
+			for(Size j = 0 ; j < redundantSize ; j ++){
+				if(data[i] == redundantChar[j]){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				return i;
+			}
+		}
+		return (Index)-1;
 	}
 };
 

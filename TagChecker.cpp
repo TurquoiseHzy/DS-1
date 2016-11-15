@@ -34,9 +34,13 @@ int TagChecker::solve(){
 	Index nextLeftBracket = 0; // next "<"
 	Index nextRightBracket = 0;// next ">"
 	Index nextTagEnd = 0;//next "</"
+	bool lastIsLeft = false;
 	bool nextIsStart = true;// next is "<" or "</"
 	Index eoc = content->get_length();
 	while(cursor < eoc){
+		if(content->noContent(cursor,eoc - 1)){
+			return 0;
+		}
 		nextLeftBracket = content->findNextChar(cursor,'<');
 		nextRightBracket = content->findNextChar(cursor,'>');
 		if(content->indexOf(nextLeftBracket + 1) == '/'){
@@ -47,30 +51,130 @@ int TagChecker::solve(){
 			nextIsStart = true;
 		}
 		if(nextLeftBracket < nextRightBracket){ // when find "<"
+			if(lastIsLeft){
+				return nextLeftBracket;
+			}
 			if(nextIsStart){
 				lastLeftBracket = nextLeftBracket;
 				cursor = lastLeftBracket + 1;
+				lastIsLeft = true;
 			}
 			else{  //when find "</"
-				Index TagEnd = content->findNextChar(nextTagEnd,'>');
-				if(TagEnd == -1){
+				Index TagEnd = content->findNextChar(nextTagEnd + 1,'>');
+				if(TagEnd > content->findNextChar(nextTagEnd + 1,'<')){
+					return content->findNextChar(nextTagEnd + 1,'<');
+				}
+				if(TagEnd == Index(-1)){
 					return nextTagEnd; //error;
 				}
-				CharString *endedTagName = new CharString(content->substring(nextTagEnd + 2,TagEnd));
+				CharString *endedTagName = content->substring(nextTagEnd + 2,TagEnd - 1);
 				Tag *nowTag = stack.pop();
+#ifdef CORRECT_MODE
 				if(nowTag == NULL || nowTag->tagname != *endedTagName){
+					nowTag->tagname.print(std::cerr);
+					std::cerr << std :: endl;
+					endedTagName->print(std::cerr);
+					std::cerr << std :: endl;
 					return nextTagEnd; //error
 				}
-				nowTag->closed = true;
-				if(nowFather){
-					nowFather->childs.push_back(nowTag);
+#else
+				if(nowTag == NULL || nowTag->tagname != *endedTagName){
+					while(nowTag->tagname != *endedTagName){
+						nowTag = stack.pop();
+						if(nowTag == NULL){
+							std::cerr << "ERROR: unappeared tag" << std :: endl;
+							endedTagName->print(std::cerr);
+							std::cerr << std :: endl;
+							return nextTagEnd;
+						}
+					}
 				}
+#endif
+				nowTag->edIndex = nextTagEnd - 1;
+				nowTag->extractHtml(content);
+				nowTag->closed = true;
+				nowFather = nowTag->father;
 				cursor = TagEnd + 1;
+				lastIsLeft = false;
 			}
 		}
 		else{
-		// todo : when find ">"
+			if(!lastIsLeft){
+				return nextRightBracket;
+			}
+			if(lastLeftBracket == Index(-1)){
+				return nextRightBracket;
+			}
+
+			if(content->indexOf(nextRightBracket - 1) == '/'){
+				CharString *x = content->substring(lastLeftBracket + 1,nextRightBracket - 2);
+				Tag *newTag = new Tag(x);
+				newTag->stIndex = nextRightBracket;
+				newTag->edIndex = lastLeftBracket;
+				newTag->closed = true;
+				cursor = nextRightBracket + 1;
+				lastIsLeft = false;
+				if(nowFather){
+					nowFather->childs.push_back(newTag);
+					newTag->father = nowFather;
+				}
+				else{
+					topTag.push_back(newTag);
+				}
+				continue;
+			}
+
+			CharString *x = content->substring(lastLeftBracket + 1,nextRightBracket - 1);
+			Tag *newTag = new Tag(x);
+			newTag->stIndex = nextRightBracket + 1;
+			stack.push(newTag);
+			cursor = nextRightBracket + 1;
+			lastIsLeft = false;
+			if(nowFather){
+				nowFather->childs.push_back(newTag);
+				newTag->father = nowFather;
+				newTag->height = nowFather->height + 1;
+			}
+			else{
+				topTag.push_back(newTag);
+			}
+			if(x->indexOf(0) != '!'){
+				nowFather = newTag;
+			}
 		}
 	}
-	return 0;
+	return -1;
+}
+
+
+void TagChecker::print(std::ostream &outputStream){
+	for(Index i = 0 ; i < topTag.size() ; i ++){
+		topTag[i]->print(outputStream);
+	}
+}
+
+
+void TagChecker::errorreport(std::ostream &outputStream ,Index errIndex){
+	if(errIndex >= 20){
+		for(Index i = 20 ; i != 0 ; i --){
+			outputStream << content->indexOf(errIndex - i);
+		}
+	}
+	else{
+		for(Index i = 0 ; i < errIndex; i ++){
+			outputStream << content->indexOf(i);
+		}
+	}
+	outputStream << " " << content->indexOf(errIndex) <<" ";
+	if(errIndex + 20 < content->get_length()){
+		for(Index i = 1 ; i <= 20 ; i ++){
+			outputStream << content->indexOf(errIndex + i);
+		}
+	}
+	else{
+		for(Index i = errIndex + 1 ; i < content->get_length(); i ++){
+			outputStream << content->indexOf(i);
+		}
+	}
+
 }

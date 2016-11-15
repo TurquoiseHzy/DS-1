@@ -1,6 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 typedef unsigned int Size;
+typedef unsigned int Index;
 template <class DataType>
 class Stack{
 protected:
@@ -20,7 +21,9 @@ public:
 protected:
 	void doubleCapacity(){
 		DataType **ndata = new DataType* [ capacity * 2 ];
-		memcpy(ndata, data, capacity);
+		for(Index i = 0 ; i < capacity ; i ++){
+			ndata[i] = data[i];
+		}
 		capacity = capacity * 2;
 		delete []data;
 		data = ndata;
