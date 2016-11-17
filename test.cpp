@@ -1,14 +1,26 @@
+//
+//  test.cpp
+//
+//  Created by Ziyi Huang on 2016/11/16.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	test-entrance
+//	
+//
 #include<iostream>
 #include<fstream>
 #include <locale.h>
 #include"interface.h"
 int main(){
 	App *appInstance = new App; 
-	std::ifstream dicin("�ʿ�.dic");
+	std::ifstream dicin("´Ê¿â.dic");
 	dicin.imbue(std::locale("chs"));
 	appInstance->initDictionary(dicin);
 	dicin.close();
 	for(int i = 1 ; i <= 10; i ++){
+
+		//calc name
 		std::string name ;
 		if( i < 10){
 			char *ch = new char [1];
@@ -18,6 +30,8 @@ int main(){
 		else{
 			name = "input/0010";
 		}
+
+		
 		std::ifstream filein(name+std::string(".html"));
 		filein.imbue(std::locale("chs"));
 		std::ofstream fileout(name+std::string(".info"));

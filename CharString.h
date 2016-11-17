@@ -1,9 +1,62 @@
+//
+//  CharString.h
+//
+//  Created by Ziyi Huang on 2016/11/15.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Declaration & definition of class CharString
+//	
+//
 #ifndef CHARSTRING_H
 #define CHARSTRING_H
 #include<string>
 #include<iostream>
+
 typedef unsigned int Size;
 typedef unsigned int Index;
+
+/*
+	class CharString:
+	@attribute:
+		data:	ptr of char data;
+		length:	length of char data;
+	
+	@func:
+		CharString(...): Constructor of CharString
+			@param:		
+				allow (const char*,unsigned int ) & (string) & (CharString &) & ()
+			@return:
+		~CharString():	Destructor of CharString
+			@param:
+			@return:		
+		get_data():		The data_ptr of CharString
+			@param:
+			@return:
+				(char*) data_ptr
+		charOf():		The char data of CharString of some index
+			@param:		
+				index:index
+			@return:
+				(char)		char data of index
+		get_length():	The length of CharString
+			@param:		
+			@return:
+				(unsigned int) length of data
+		substring():	SubString of CharString
+			@oaram: 	
+				stIndex:start-index
+				edIndex:end-index
+			@return:
+				(CharString* ) ptr of substring
+		concat():
+			@param:
+				src (&length): string to concat
+			@return:
+				CharString after concat
+
+		...To complete
+*/
 class CharString{
 protected:
 	char *data;
@@ -31,7 +84,7 @@ public:
 	}
 
 public:
-	(char *)get_data() const{
+	char* get_data() const{
 		return data;
 	}
 
@@ -53,7 +106,8 @@ public:
 		return new CharString(std::string(""));
 	}
 
-	CharString concat( CharString *src){
+	//concat @src
+	CharString concat(CharString *src){
 		Size l = src->get_length();
 		char *ndata = new char[length + l];
 		memcpy(ndata, data,length);
@@ -77,6 +131,7 @@ public:
 	CharString* assgin(CharString *Dest,const char *src , const Size &length){
 		return assign(Dest,new CharString(src,length));
 	}
+
 	CharString* assign(CharString *Dest,CharString *src){
 		delete Dest->data;
 		Dest->data = new char [src->length];
@@ -85,14 +140,17 @@ public:
 		return Dest;
 	}
 
+	//assign
 	CharString* operator = (CharString &src){
 		return assign(this,&src);
 	}
 
+	//assign
 	CharString* operator = (CharString *src){
 		return assign(this,src);
 	}
 
+	//judge equal
 	bool operator ==(CharString& src){
 		if(length != src.length){
 			return false;
@@ -105,10 +163,12 @@ public:
 		return true;
 	}
 
+	//judge not equal
 	bool operator !=(CharString& src){
 		return !this->operator==(src);
 	}
 
+	//print the CharString,ignore more than one space & newline
 	void print(std::ostream &outputStream){
 		bool longspace = false;
 		bool bracketover = true;
@@ -136,6 +196,7 @@ public:
 		}
 	}
 
+	//find next @key from @stIndex
 	Index findNextChar(const Index& stIndex,const char &key){
 		for(Index i = stIndex ; i < length ; i ++){
 			if(key == data[i]){
@@ -145,6 +206,7 @@ public:
 		return -1;
 	}
 
+	//is no content from @stIndex to @edIndex
 	bool noContent(const Index& stIndex, const Index& edIndex){
 		for(Index i = stIndex ; i <= edIndex ; i ++){
 			if(data[i] != '\n' && data[i] != '\0' && data[i] != ' '){
@@ -154,7 +216,8 @@ public:
 		return true;
 	}
 
-	Index findNextNotChar(const Index&stIndex, const char *redundantChar,const Size &redundantSize){
+	//find next not in@redundantChar from @stIndex
+	Index findNextNotChar(const Index& stIndex, const char *redundantChar,const Size &redundantSize){
 		for(Index i = stIndex ; i < length ; i ++){
 			bool flag = true;
 			for(Size j = 0 ; j < redundantSize ; j ++){
@@ -170,11 +233,12 @@ public:
 		return (Index)-1;
 	}
 
+	//return string type of @this
 	std::string get_string() const{
 		return std::string(data,length);
 	}
 
-
+	//return startIndex of @key in @this
 	Index indexOf(CharString& key){
 		if(	length < key.length ){
 			return -1;

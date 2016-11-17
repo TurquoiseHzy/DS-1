@@ -1,8 +1,26 @@
+//
+//  Stack.h
+//
+//  Created by Ziyi Huang on 2016/11/16.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Declaration & definition of class Stack
+//	
+//
 #ifndef STACK_H
 #define STACK_H
 typedef unsigned int Size;
 typedef unsigned int Index;
 template <class DataType>
+/*
+	class Stack:
+		@attr:
+			data:saves ptr of data
+			size:size of Stack
+			capacity:capacity of Stack
+
+*/
 class Stack{
 protected:
 	DataType **data;
@@ -19,6 +37,7 @@ public:
 		delete[] data;
 	}
 protected:
+	//double capacity
 	void doubleCapacity(){
 		DataType **ndata = new DataType* [ capacity * 2 ];
 		for(Index i = 0 ; i < capacity ; i ++){
@@ -30,6 +49,7 @@ protected:
 	}
 
 public:
+	//return top
 	DataType* top(){
 		if(size){
 			return data[size - 1];
@@ -37,14 +57,17 @@ public:
 		return NULL;
 	}
 
+	//judge empty
 	bool empty(){
 		return (size == 0);
 	}
 
+	//return size
 	Size get_size(){
 		return size;
 	}
 	
+	//pop top
 	DataType* pop(){
 		if(size){
 			size --;
@@ -53,6 +76,7 @@ public:
 		return NULL;
 	}
 
+	//push @dt
 	Size push(DataType* dt){
 		if(size == capacity){
 			doubleCapacity();
@@ -62,6 +86,7 @@ public:
 		return size;
 	}
 
+	//push @dt
 	Size push(DataType& dt){
 		if(size == capacity){
 			doubleCapacity();

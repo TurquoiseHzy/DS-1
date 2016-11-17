@@ -1,9 +1,33 @@
+//
+//  Tag.h
+//
+//  Created by Ziyi Huang on 2016/11/16.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Declaration & definition of class Tag
+//	
+//
 #ifndef TAG_H
 #define TAG_H
 typedef unsigned int Size;
 #include"CharString.h"
 #include"SentenceSeparator.h"
 #include<vector>
+
+/*
+	class Tag:
+		@attr:
+			tagname
+			attrs:
+			classname:
+			innerHtml:
+			stIndex & edIndex: start & end index in whole html
+			height: height in tag tree
+			father: father in tag tree
+			closed: is well-closed? to report error
+			important & isContent : only use in this project to judge output or not
+*/
 class Tag{
 public:
 	CharString tagname;
@@ -60,6 +84,8 @@ public:
 
 	void print(std::ostream &outputStream){
 		/*
+		@show all info in HTML
+
 		tagname.print(outputStream);
 		outputStream<< ":attr = ";
 		attrs.print(outputStream);
@@ -77,6 +103,8 @@ public:
 			}
 			childs[i] -> print(outputStream);
 		}*/
+
+		//find out tag is important ?
 		if(important){
 			if(innerHtml.indexOf(CharString("<p",2)) != Index(-1)
 				|| innerHtml.indexOf(CharString("<div",4)) != Index(-1)
@@ -102,6 +130,8 @@ public:
 	}
 
 	void divide(Dictionary *dictionary ,std::ostream &outputStream){
+
+		//find out tag is content ?
 		if(isContent){
 			if(innerHtml.indexOf(CharString("<p",2)) != Index(-1)
 				|| innerHtml.indexOf(CharString("<div",4)) != Index(-1)

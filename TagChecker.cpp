@@ -1,3 +1,13 @@
+//
+//  TagChecker.cpp
+//
+//  Created by Ziyi Huang on 2016/11/16.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Definition of function in class TagChecker
+//	
+//
 #include<iostream>
 
 #include"Tag.h"
@@ -5,6 +15,8 @@
 #include"CharStringLink.h"
 #include"TagChecker.h"
 
+
+//init: from @inputStream to input all HTML
 void TagChecker::init(std::istream &inputStream){
 	while(true){
 	std::string line;
@@ -69,7 +81,8 @@ int TagChecker::solve(){
 				}
 				CharString *endedTagName = content->substring(nextTagEnd + 2,TagEnd - 1);
 				Tag *nowTag = stack.pop();
-#ifdef CORRECT_MODE
+
+#ifdef CORRECT_MODE			//no tag not-closed-admiition
 				if(nowTag == NULL || nowTag->tagname != *endedTagName){
 					nowTag->tagname.print(std::cerr);
 					std::cerr << std :: endl;
@@ -158,14 +171,14 @@ int TagChecker::solve(){
 	return -1;
 }
 
-
+//print all tags var @outputStream(output defined in class @Tag)
 void TagChecker::print(std::ostream &outputStream){
 	for(Index i = 0 ; i < topTag.size() ; i ++){
 		topTag[i]->print(outputStream);
 	}
 }
 
-
+//errorreport
 void TagChecker::errorreport(std::ostream &outputStream ,Index errIndex){
 	if(errIndex >= 20){
 		for(Index i = 20 ; i != 0 ; i --){
@@ -191,7 +204,7 @@ void TagChecker::errorreport(std::ostream &outputStream ,Index errIndex){
 
 }
 
-
+//devide(defined in class @Tag)
 void TagChecker::divide(Dictionary *dictionary,std::ostream &outputStream){
 	for(Index i = 0 ; i < topTag.size() ; i ++){
 		topTag[i]->divide(dictionary,outputStream);

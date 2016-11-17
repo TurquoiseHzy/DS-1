@@ -1,6 +1,19 @@
+//
+//  TagChecker.h
+//
+//  Created by Ziyi Huang on 2016/11/16.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Declaration of class TagChecker
+//	
+//
 #ifndef TAGCHECKER_H
 #define TAGCHECKER_H
 #include"Tag.h"
+
+//a class to save all infomations in HTML
+//and provide interface to divide & print;
 class TagChecker{
 protected:
 	CharStringLink *article;

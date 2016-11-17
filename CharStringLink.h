@@ -1,7 +1,28 @@
+//
+//  CharStringLink.h
+//
+//  Created by Ziyi Huang on 2016/11/15.
+//  Copyright © 2016年 Ziyi Huang. All rights reserved.
+//	
+//	
+//	Declaration & definition of class CharStringNode & CharStringLink
+//	
+//
 #ifndef CHARSTRINGLINK_H
 #define CHARSTRINGLINK_H
 #include"CharString.h"
 
+
+/*
+	class CharStringNode
+	extends from CharString
+		@attribute: 
+			next:	next_node_ptr
+			pre:	pre_node_ptr
+		@func:
+			Constructor:
+				allow (const char *,unsigned int )  &  (CHarStringNode &)  &  (CharString &)  &  (CharString *)  &  (string)
+*/
 class CharStringNode : public CharString{
 public:
 	CharStringNode *next,*pre;
@@ -26,6 +47,13 @@ public:
 };
 
 
+/*
+	class CharStringList
+		@attribute: 
+			head:	head_node_ptr
+			tail:	tail_node_ptr
+			size: 	node_num
+*/
 class CharStringLink{
 public:
 	CharStringNode *head,*tail;
@@ -52,6 +80,7 @@ public:
 		return (size == 0);
 	}
 
+	//search @key(with length @length)
 	CharStringNode *search(const char*key, const Size&length){
 		CharStringNode *now = head;
 		while(now != NULL){
@@ -85,16 +114,18 @@ public:
 		return NULL;
 	}
 
-	CharStringNode *search(std::string& src){
+	CharStringNode *search(std::string& key){
 		CharStringNode *now = head;
 		while(now != NULL){
-			if(*now == CharString(src)){
+			if(*now == CharString(key)){
 				return now;
 			}
 			now = now->next;
 		}
 		return NULL;
 	}
+
+	//add node @src (with length @l)
 	CharStringNode *add(const char *src,const Size &l){
 		CharStringNode *newNode = new CharStringNode (src,l);
 		return add(newNode);
@@ -114,6 +145,7 @@ public:
 		CharStringNode *newNode = new CharStringNode(src);
 		return add(newNode);
 	}
+
 	CharStringNode *add(CharStringNode *src){
 		if(size == 0){
 			head = src ;
@@ -128,6 +160,7 @@ public:
 		return src;
 	}
 
+	//search & remove @key(with length @length)
 	void remove(std::string& key){
 		remove(search(key));
 	}
@@ -143,6 +176,7 @@ public:
 		remove(search(key));
 	}
 
+	//remove @dest (dest node)
 	void remove(CharStringNode *dest){
 		if(dest == NULL){
 			return ;
@@ -157,6 +191,10 @@ public:
 		size --;
 	}
 
+	/*	output link in @outputStream
+		only use in this project
+		ignore  ， 。 and many chs punctuation
+	*/
 	void print(std::ostream &outputStream){
 		CharStringNode* now = head;
 		while(now != NULL){
