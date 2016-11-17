@@ -1,6 +1,7 @@
 #ifndef CHARSTRINGLINK_H
 #define CHARSTRINGLINK_H
 #include"CharString.h"
+
 class CharStringNode : public CharString{
 public:
 	CharStringNode *next,*pre;
@@ -159,7 +160,14 @@ public:
 	void print(std::ostream &outputStream){
 		CharStringNode* now = head;
 		while(now != NULL){
-			if(now->get_length()>=3){
+			if(now->get_length() > 0){
+				if(now->get_length() == 3){
+					if(int(now->get_data()[1]) == -68 
+						|| int(now->get_data()[1]) == - 128){
+						now = now -> next;
+						continue;
+					}
+				}
 				now->print(outputStream);
 				outputStream << std::endl;
 			}

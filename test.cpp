@@ -5,7 +5,6 @@
 int main(){
 	App *appInstance = new App; 
 	std::ifstream dicin("´Ê¿â.dic");
-	std::cout.imbue(std::locale("chs"));
 	dicin.imbue(std::locale("chs"));
 	appInstance->initDictionary(dicin);
 	dicin.close();

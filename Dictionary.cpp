@@ -25,8 +25,10 @@ Dictionary::Dictionary(std::istream &inputStream):max_len(0){
 	}
 }
 
-bool Dictionary::exist(CharString *key){
-	data[key->get_string()] ++ ;
+bool Dictionary::exist(CharString *key){/*
+	if(key->get_length() % 3 == 0 && key->get_length() >=6 ){
+		data[key->get_string()] ++ ;
+	}*/
 	if(data[key->get_string()] >= 10){
 		return true;
 	}
