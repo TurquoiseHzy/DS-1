@@ -43,7 +43,7 @@ int TagChecker::solve(){
 		}
 		nextLeftBracket = content->findNextChar(cursor,'<');
 		nextRightBracket = content->findNextChar(cursor,'>');
-		if(content->indexOf(nextLeftBracket + 1) == '/'){
+		if(content->charOf(nextLeftBracket + 1) == '/'){
 			nextTagEnd = nextLeftBracket;
 			nextIsStart = false;
 		}
@@ -106,7 +106,7 @@ int TagChecker::solve(){
 				return nextRightBracket;
 			}
 
-			if(content->indexOf(nextRightBracket - 1) == '/'){
+			if(content->charOf(nextRightBracket - 1) == '/'){
 				CharString *x = content->substring(lastLeftBracket + 1,nextRightBracket - 2);
 				Tag *newTag = new Tag(x);
 				newTag->stIndex = nextRightBracket;
@@ -117,6 +117,12 @@ int TagChecker::solve(){
 				if(nowFather){
 					nowFather->childs.push_back(newTag);
 					newTag->father = nowFather;
+					if(nowFather->important){
+						newTag->important = true;
+					}
+					if(nowFather->isContent){
+						newTag->isContent = true;
+					}
 				}
 				else{
 					topTag.push_back(newTag);
@@ -134,11 +140,17 @@ int TagChecker::solve(){
 				nowFather->childs.push_back(newTag);
 				newTag->father = nowFather;
 				newTag->height = nowFather->height + 1;
+				if(nowFather->important){
+					newTag->important = true;
+				}
+				if(nowFather->isContent){
+					newTag->isContent = true;
+				}
 			}
 			else{
 				topTag.push_back(newTag);
 			}
-			if(x->indexOf(0) != '!'){
+			if(x->charOf(0) != '!'){
 				nowFather = newTag;
 			}
 		}
@@ -157,24 +169,31 @@ void TagChecker::print(std::ostream &outputStream){
 void TagChecker::errorreport(std::ostream &outputStream ,Index errIndex){
 	if(errIndex >= 20){
 		for(Index i = 20 ; i != 0 ; i --){
-			outputStream << content->indexOf(errIndex - i);
+			outputStream << content->charOf(errIndex - i);
 		}
 	}
 	else{
 		for(Index i = 0 ; i < errIndex; i ++){
-			outputStream << content->indexOf(i);
+			outputStream << content->charOf(i);
 		}
 	}
-	outputStream << " " << content->indexOf(errIndex) <<" ";
+	outputStream << " " << content->charOf(errIndex) <<" ";
 	if(errIndex + 20 < content->get_length()){
 		for(Index i = 1 ; i <= 20 ; i ++){
-			outputStream << content->indexOf(errIndex + i);
+			outputStream << content->charOf(errIndex + i);
 		}
 	}
 	else{
 		for(Index i = errIndex + 1 ; i < content->get_length(); i ++){
-			outputStream << content->indexOf(i);
+			outputStream << content->charOf(i);
 		}
 	}
 
+}
+
+
+void TagChecker::divide(Dictionary *dictionary,std::ostream &outputStream){
+	for(Index i = 0 ; i < topTag.size() ; i ++){
+		topTag[i]->divide(dictionary,outputStream);
+	}
 }

@@ -155,6 +155,17 @@ public:
 		delete dest;
 		size --;
 	}
+
+	void print(std::ostream &outputStream){
+		CharStringNode* now = head;
+		while(now != NULL){
+			if(now->get_length()>=3){
+				now->print(outputStream);
+				outputStream << std::endl;
+			}
+			now  = now ->next;
+		}
+	}
 };
 
 

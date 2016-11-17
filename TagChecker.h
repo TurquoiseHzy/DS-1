@@ -17,13 +17,11 @@ public:
 
 public:
 	int solve();
-	
-	/*std::vector<Tag* > getTopTags(){
-		return topTag;
-	}*/
+
 
 	void print(std::ostream &outputStream); 
 
+	void divide(Dictionary *dictionary,std::ostream &outputStream); 
 
 	void errorreport(std::ostream &outputStream, Index errIndex);
 };

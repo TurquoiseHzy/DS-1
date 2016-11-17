@@ -1,6 +1,7 @@
 #ifndef CHARSTRING_H
 #define CHARSTRING_H
 #include<string>
+#include<iostream>
 typedef unsigned int Size;
 typedef unsigned int Index;
 class CharString{
@@ -30,18 +31,18 @@ public:
 	}
 
 public:
-	(char *)get_data(){
+	(char *)get_data() const{
 		return data;
 	}
 
-	char indexOf(Index index){
+	char charOf(Index index){
 		if( index < length )
 			return data[index];
 		else
 			return '\0';
 	}
 
-	Size get_length(){
+	Size get_length() const{
 		return length;
 	}
 
@@ -109,8 +110,29 @@ public:
 	}
 
 	void print(std::ostream &outputStream){
+		bool longspace = false;
+		bool bracketover = true;
 		for(Index i = 0 ; i < length ; i ++){
-			outputStream << data[i];
+			if(data[i] == '<'){
+				bracketover = false;
+			}
+			if(data[i] == '>'){
+				bracketover = true;
+			}
+			else if(bracketover){
+				if(data[i] != '\n' && data[i] != ' '){
+					outputStream << data[i];
+				}
+				else if(data[i] != '\n' && !longspace){
+					outputStream << data[i];
+				}
+				if(data[i] == ' '){
+					longspace = true;
+				}
+				else{
+					longspace = false;
+				}
+			}
 		}
 	}
 
@@ -146,6 +168,30 @@ public:
 			}
 		}
 		return (Index)-1;
+	}
+
+	std::string get_string() const{
+		return std::string(data,length);
+	}
+
+
+	Index indexOf(CharString& key){
+		if(	length < key.length ){
+			return -1;
+		}
+		for(Index i = 0 ; i < length - key.length + 1; i ++){
+			bool flag = true;
+			for(Index j = 0 ; j < key.length ; j ++){
+				if(data[i + j] != key.charOf(j)){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				return i;
+			}
+		}
+		return -1;
 	}
 };
 
